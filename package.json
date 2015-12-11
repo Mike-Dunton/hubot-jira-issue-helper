@@ -11,10 +11,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/hubot-scripts/hubot-jira-issue-helper.git"
+    "url": "git://github.com/Mike-Dunton/hubot-jira-issue-helper"
   },
   "bugs": {
-    "url": "https://github.com/hubot-scripts/hubot-jira-issue-helper/issues"
+    "url": "https://github.com/Mike-Dunton/hubot-jira-issue-helper/issues"
   },
   "dependencies": {
     "coffee-script": "~1.6"
