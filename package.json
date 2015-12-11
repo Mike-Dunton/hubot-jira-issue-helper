@@ -1,0 +1,39 @@
+{
+  "name": "hubot-jira-issue-helper",
+  "description": "A Hubot script that will add your subtasks for you!",
+  "version": "0.0.0",
+  "author": "Michael Dunton <Michael.Dunton@patlive.com>",
+  "license": "MIT",
+
+  "keywords": ["hubot","hubot-scripts","jira"],
+
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/hubot-scripts/hubot-jira-issue-helper.git"
+  },
+
+  "bugs": {
+    "url": "https://github.com/hubot-scripts/hubot-jira-issue-helper/issues"
+  },
+
+  "dependencies": {
+    "coffee-script": "~1.6"
+  },
+
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*",
+    "sinon-chai": "*",
+    "sinon": "*",
+    "grunt-mocha-test": "~0.7.0",
+    "grunt-release": "~0.6.0",
+    "matchdep": "~0.1.2",
+    "grunt-contrib-watch": "~0.5.3"
+  },
+
+  "main": "index.coffee",
+
+  "scripts": {
+    "test": "grunt test"
+  }
+}
