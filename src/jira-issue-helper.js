@@ -1,18 +1,18 @@
-# Description
-#   A Hubot script that will add your subtasks for you!
-#
-# Configuration:
-#   HUBOT_JIRA_URL
-#   HUBOT_JIRA_USER
-#   HUBOT_JIRA_PASSWORD
-#
-# Commands:
-#   hubot jira configure <project key> <issue type> <add|rm> <task name>
-#   hubot jira show <project key> [issue type]
-#   hubot jira add subtasks <issue type> <issue key>
-#
-# Author:
-#   Michael Dunton
+// Description
+//   A Hubot script that will add your subtasks for you!
+//
+// Configuration:
+//   HUBOT_JIRA_URL
+//   HUBOT_JIRA_USER
+//   HUBOT_JIRA_PASSWORD
+//
+// Commands:
+//   hubot jira configure <project key> <issue type> <add|rm> <task name>
+//   hubot jira show <project key> [issue type]
+//   hubot jira add subtasks <issue type> <issue key>
+//
+// Author:
+//   Michael Dunton
 
 function IssueTaskLists(robot) {
     function TaskList(issueType){
@@ -66,7 +66,7 @@ function JiraHelper(robot) {
         var responseMsg = issueTaskListManager.list(projectKey, issueType);
         response.reply(responseMsg);
     });
-    //configure <project key> <issue type> <add|rm> <task name>
+
     robot.respond(/jira configure (.*)/i, function(response) {
         var messageArguments = response.match[1].split(" ");
         var projectKey = messageArguments[0];
@@ -77,6 +77,5 @@ function JiraHelper(robot) {
         response.reply(responseMsg);
     });
 }
-
 
 module.exports = JiraHelper;
