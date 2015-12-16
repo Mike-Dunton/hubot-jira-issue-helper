@@ -2,7 +2,7 @@
 
 A Hubot script that will add your subtasks for you!
 
-See [`src/jira-issue-helper.coffee`](src/jira-issue-helper.coffee) for full documentation.
+See [`src/jira-issue-helper.coffee`](src/jira-issue-helper.js) for full documentation.
 
 ## Installation
 
@@ -16,9 +16,10 @@ Then add **hubot-jira-issue-helper** to your `external-scripts.json`:
 ["hubot-jira-issue-helper"]
 ```
 
-## Sample Interaction
+## Commands
 
 ```
-user1>> hubot hello
-hubot>> hello!
+//   hubot jira show <project key> [issue type]
+//   hubot jira add subtasks <issue type> <issue key>
+//   hubot jira add subtasks <issue type> <issue key>
 ```
