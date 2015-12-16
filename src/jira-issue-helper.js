@@ -14,7 +14,7 @@
 // Author:
 //   Michael Dunton
 
-function IssueTaskLists(robot) {
+function IssueTaskLists(robot, JIRA_URL, JIRA_USER, JIRA_PASSWORD) {
     function TaskList(issueType){
         var newTaskList = {};
         newTaskList[issueType] = [];
@@ -44,12 +44,26 @@ function IssueTaskLists(robot) {
             var taskList = getTaskList(projectKey, issueType);
             taskList.push(listItem);
             setTaskList(projectKey, issueType, taskList);
-            return "Item Added To List";
+            var response = listItem + " added To List\n Current Task List\n ";
+            response += list(projectKey, issueType);
+            return response;
+    }
+
+    function remove(projectKey, issueType, listItem) {
+            var taskList = getTaskList(projectKey, issueType);
+            var newTaskList = taskList.filter(function(currentTask){
+                return !currentTask === listItem
+            })
+            setTaskList(projectKey, issueType, newTaskList);
+            var response = listItem + " removed from List\n Current Task List\n ";
+            response += list(projectKey, issueType);
+            return response;
     }
 
     return {
         list: list,
-        add: add
+        add: add,
+        remove: remove
     };
 
 }
@@ -58,7 +72,7 @@ function JiraHelper(robot) {
     var JIRA_URL = process.env.HUBOT_JIRA_URL;
     var JIRA_USER = process.env.HUBOT_JIRA_USER;
     var JIRA_PASSWORD = process.env.HUBOT_JIRA_PASSWORD;
-    var issueTaskListManager = new IssueTaskLists(robot);
+    var issueTaskListManager = new IssueTaskLists(robot, JIRA_URL, JIRA_USER, JIRA_PASSWORD);
     robot.respond(/jira show (.*)/i, function(response) {
         var messageArguments = response.match[1].split(" ");
         var projectKey = messageArguments[0];
@@ -73,7 +87,12 @@ function JiraHelper(robot) {
         var issueType = messageArguments[1];
         var action = messageArguments[2];
         var task = messageArguments[3];
-        var responseMsg = issueTaskListManager.add(projectKey, issueType, task);
+        var responseMsg;
+        if(action === "add"){
+            responseMsg = issueTaskListManager.add(projectKey, issueType, task);
+        } else if(action === "rm") {
+            responseMsg = issueTaskListManager.remove(projectKey, issueType, task);
+        }
         response.reply(responseMsg);
     });
 }
