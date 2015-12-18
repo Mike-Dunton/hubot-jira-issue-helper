@@ -5,6 +5,7 @@
 //   HUBOT_JIRA_URL
 //   HUBOT_JIRA_USER
 //   HUBOT_JIRA_PASSWORD
+//   HUBOT_JIRA_SUBTASK_ISSUE_TYPE_ID
 //
 // Commands:
 //   hubot jira configure <project key> <issue type> <add|rm> <task name>
@@ -14,19 +15,68 @@
 // Author:
 //   Michael Dunton
 
+var async = require('async');
+var request = require('superagent');
+
 function IssueTaskLists(robot, JIRA_URL, JIRA_USER, JIRA_PASSWORD) {
+    var issueEndPoint = JIRA_URL + "/rest/api/latest/issue/"
+    function createTask(task, callback) {
+        request
+            .post(issueEndPoint)
+            .set('Content-Type', 'application/json')
+            .auth(JIRA_USER, JIRA_PASSWORD)
+            .send({
+                "fields": {
+                    "project": {
+                            "key": task.project_key
+                    },
+                    "parent": {
+                        "key": task.parent_key
+                    },
+                    "summary": task.task_name,
+                    "issuetype":
+                    {
+                        "id": HUBOT_JIRA_SUBTASK_ISSUE_TYPE_ID
+                    }
+                }
+            })
+            .end(function(err, res){
+                if (err || !res.ok) {callback(err)}
+                else {callback()}
+            });
+
+    }
+
     function TaskList(issueType){
         var newTaskList = {};
         newTaskList[issueType] = [];
         return newTaskList;
     }
     function setTaskList(projectKey, issueType, taskList) {
-        robot.brain.set('jira-' + projectKey + '-' + issueType, taskList);
+        var keyedTaskList = robot.brain.get('jira-' + projectKey.toUpperCase()) || {};
+        keyedTaskList[issueType.toUpperCase()] = taskList;
+        robot.brain.set('jira-' + projectKey.toUpperCase(), keyedTaskList);
     }
 
     function getTaskList(projectKey, issueType) {
-        var taskList = robot.brain.get('jira-' + projectKey + '-' + issueType) || [];
-        return taskList;
+        var keyedTaskList = robot.brain.get('jira-' + projectKey.toUpperCase());
+        return keyedTaskList[issueType.toUpperCase()] || [];
+    }
+
+    function list(projectKey) {
+        var response = "";
+        var taskLists = getAllTaskList(projectKey);
+        for(issueType in taskLists){
+            if(taskLists.hasOwnProperty(issueType)) {
+                response += "Project: " + projectKey + "Issue Type: " + issueType + " \n";
+                response += "==================================================================== \n ";
+                var currentTaskList = taskLists[issueType];
+                for (var i = 0; i < currentTaskList.length; i++) {
+                    response += currentTaskList[i] + "\n";
+                }
+            }
+        }
+        return response;
     }
 
     function list(projectKey, issueType) {
@@ -60,10 +110,35 @@ function IssueTaskLists(robot, JIRA_URL, JIRA_USER, JIRA_PASSWORD) {
             return response;
     }
 
+    function createSubtasks(issueType, issueKey) {
+        var project = issueKey.split("-")[0];
+        var taskList = getTaskList(project, issueType);
+        if(taskList.length === 0){
+            return "Could not find project or issue type";
+        } else {
+            var taskObjList = taskList.map(function(currentTask){
+                return {
+                    "project_key" : project,
+                    "parent_key" : issueKey,
+                    "task_name" : currentTask
+                }
+            })
+            async.eachSeries(taskObjList, IssueTaskLists.createTask, function(err){
+                if(err){
+                    return "Something went wrong...Good Luck";
+                } else {
+                    return "Tasks Created!";
+                }
+            });
+        }
+
+    }
+
     return {
         list: list,
         add: add,
-        remove: remove
+        remove: remove,
+        createSubtasks : createSubtasks
     };
 
 }
@@ -93,6 +168,14 @@ function JiraHelper(robot) {
         } else if(action === "rm") {
             responseMsg = issueTaskListManager.remove(projectKey, issueType, task);
         }
+        response.reply(responseMsg);
+    });
+
+    robot.respond(/jira add subtasks (.*)/i, function(response) {
+        var messageArguments = response.match[1].split(" ");
+        var issueType = messageArguments[0];
+        var issueKey = messageArguments[1];
+        var responseMsg = issueTaskListManager.createSubtasks(issueType, issueKey);
         response.reply(responseMsg);
     });
 }
