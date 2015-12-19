@@ -32,15 +32,6 @@ function listSubTasks() {
     return new Promise(function(onSuccess, onError) {
         listAll()
             .then(function(result) {
-                /*
-                 * "self": "https://jira.patlive.com/rest/api/2/issuetype/2",
-                 % "id": "2",
-                 "description": "A new feature of the product, which has yet to be developed.",
-                 "iconUrl": "https://jira.patlive.com/images/icons/issuetypes/newfeature.png",
-                 "name": "New Feature",
-                 "subtask": false
-                 */
-
                 var tasks = result.filter(function(issueType) {
                     return (issueType.subtask === true);
                 });
