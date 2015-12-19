@@ -18,8 +18,15 @@
 var async = require('async');
 var request = require('superagent');
 
+var JIRA = require('./lib/jira');
+require('./lib/jira-issueTypes');
+
+JIRA.Config.setUserName(process.env.HUBOT_JIRA_USER);
+JIRA.Config.setPassword(process.env.HUBOT_JIRA_PASSWORD);
+JIRA.Config.setRootUri(process.env.HUBOT_JIRA_URL);
+
 function IssueTaskLists(robot, JIRA_URL, JIRA_USER, JIRA_PASSWORD) {
-    var issueEndPoint = JIRA_URL + "/rest/api/latest/issue/"
+    var issueEndPoint = JIRA_URL + "/rest/api/latest/issue/";
     function createTask(task, callback) {
         request
             .post(issueEndPoint)
@@ -131,6 +138,9 @@ function IssueTaskLists(robot, JIRA_URL, JIRA_USER, JIRA_PASSWORD) {
                 }
             });
         }
+    }
+
+    function listIssueTypes(projectId) {
 
     }
 
@@ -138,9 +148,15 @@ function IssueTaskLists(robot, JIRA_URL, JIRA_USER, JIRA_PASSWORD) {
         list: list,
         add: add,
         remove: remove,
-        createSubtasks : createSubtasks
+        createSubtasks : createSubtasks,
+        listIssueTypes : listIssueTypes
     };
 
+}
+
+function robotShowError(response, error) {
+    var errorString = error.toString() + "\n" + error.callstack;
+    response.respond("Something bad happened: " + errorString);
 }
 
 function JiraHelper(robot) {
@@ -177,6 +193,36 @@ function JiraHelper(robot) {
         var issueKey = messageArguments[1];
         var responseMsg = issueTaskListManager.createSubtasks(issueType, issueKey);
         response.reply(responseMsg);
+    });
+
+    robot.respond(/jira list tasks/i, function(response) {
+        JIRA.IssueTypes.ListTasks()
+            .then(function(result) {
+                var names = result.map(function(issueType) {
+                    return "\"" + issueType.name + "\"";
+                });
+
+                var taskTypes = names.join(", ")
+                response.reply(taskTypes);
+            })
+            .catch(function(error) {
+                robotShowError(response, error);
+            });
+    });
+
+    robot.respond(/jira list subtasks/i, function(response) {
+        JIRA.IssueTypes.ListSubTasks()
+            .then(function(result) {
+                var names = result.map(function(issueType) {
+                    return issueType.name;
+                });
+
+                var taskSubTypes = names.join(", ")
+                response.reply(taskSubTypes);
+            })
+            .catch(function(error) {
+                robotShowError(response, error);
+            });
     });
 }
 
