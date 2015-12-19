@@ -13,30 +13,30 @@ function sendRequest(uri, method, data) {
         var request = require('superagent');
         switch (method) {
             case "GET":
-                request.get(endpoint);
+                request = request.get(endpoint);
                 break;
             case "POST":
-                request.post(endpoint);
+                request = request.post(endpoint);
                 break;
             case "PUT":
-                request.put(endpoint);
+                request = request.put(endpoint);
                 break;
             default:
                 throw new Error("Unknown method: " + method);
         }
 
-        request.set('Content-Type', 'application/json');
-        request.auth(username, password);
+        request = request.set('Content-Type', 'application/json');
+        request = request.auth(username, password);
         if (data) {
-            request.send(data)
+            request = request.send(data)
         } else {
-            request.send();
+            request = request.send();
         }
         request.end(function(err, res){
             if (err || !res.ok) {
                 onError(err);
             } else {
-                callback(res.body);
+                onSuccess(res.body);
             }
         });
     });
