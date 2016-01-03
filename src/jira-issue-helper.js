@@ -15,6 +15,7 @@
 // Author:
 //   Michael Dunton
 
+var TaskListManager = require('./lib/task-list-manager/task-list-manager');
 var JIRA = require('./lib/jira-api/jira');
 require('./lib/jira-api/jira-issueTypes');
 
@@ -29,8 +30,7 @@ function robotShowError(response, error) {
 }
 
 function JiraHelper(robot) {
-    var TaskListManagerConstructor = require('./lib/task-list-manager/task-list-manager');
-    var taskListManager = new TaskListManagerConstructor(robot);
+    var taskListManager = new TaskListManager(robot);
     robot.respond(/jira show (.*)/i, function(response) {
         var messageArguments = response.match[1].split(" ");
         var projectKey = messageArguments[0];
