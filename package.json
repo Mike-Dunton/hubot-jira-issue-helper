@@ -1,17 +1,40 @@
 {
-  "name": "hubot-jira-issue-helper",
-  "description": "A Hubot script that will add your subtasks for you!",
-  "version": "0.1.9",
-  "author": "Michael Dunton <Michael.Dunton@tresta.com>",
-  "license": "MIT",
-  "keywords": [
-    "hubot",
-    "hubot-scripts",
-    "jira"
+  "_args": [
+    [
+      "hubot-jira-issue-helper@0.1.6",
+      "/Users/dunton/Lobby/Hubot"
+    ]
   ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/Mike-Dunton/hubot-jira-issue-helper"
+  "_from": "hubot-jira-issue-helper@0.1.6",
+  "_id": "hubot-jira-issue-helper@0.1.6",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/hubot-jira-issue-helper",
+  "_nodeVersion": "5.0.0",
+  "_npmUser": {
+    "email": "michael.dunton@tresta.com",
+    "name": "michaeldunton"
+  },
+  "_npmVersion": "3.5.2",
+  "_phantomChildren": {},
+  "_requested": {
+    "name": "hubot-jira-issue-helper",
+    "raw": "hubot-jira-issue-helper@0.1.6",
+    "rawSpec": "0.1.6",
+    "scope": null,
+    "spec": "0.1.6",
+    "type": "version"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_shasum": "1deaeba419e03bfc842595a2026851aa36536e99",
+  "_shrinkwrap": null,
+  "_spec": "hubot-jira-issue-helper@0.1.6",
+  "_where": "/Users/dunton/Lobby/Hubot",
+  "author": {
+    "email": "Michael.Dunton@tresta.com",
+    "name": "Michael Dunton"
   },
   "bugs": {
     "url": "https://github.com/Mike-Dunton/hubot-jira-issue-helper/issues"
@@ -21,19 +44,47 @@
     "coffee-script": "~1.6",
     "superagent": "^1.6.1"
   },
+  "description": "A Hubot script that will add your subtasks for you!",
   "devDependencies": {
-    "mocha": "*",
     "chai": "*",
-    "sinon-chai": "*",
-    "sinon": "*",
     "grunt": "0.4.2",
+    "grunt-contrib-watch": "*",
     "grunt-mocha-test": "~0.7.0",
     "grunt-release": "*",
     "matchdep": "~0.1.2",
-    "grunt-contrib-watch": "*"
+    "mocha": "*",
+    "sinon": "*",
+    "sinon-chai": "*"
   },
+  "directories": {},
+  "dist": {
+    "shasum": "1deaeba419e03bfc842595a2026851aa36536e99",
+    "tarball": "http://registry.npmjs.org/hubot-jira-issue-helper/-/hubot-jira-issue-helper-0.1.6.tgz"
+  },
+  "gitHead": "44f1c615cef1cd4312fa3dbb8b79cffb1f75a252",
+  "homepage": "https://github.com/Mike-Dunton/hubot-jira-issue-helper#readme",
+  "keywords": [
+    "hubot",
+    "hubot-scripts",
+    "jira"
+  ],
+  "license": "MIT",
   "main": "index.coffee",
+  "maintainers": [
+    {
+      "name": "michaeldunton",
+      "email": "michael.dunton@tresta.com"
+    }
+  ],
+  "name": "hubot-jira-issue-helper",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Mike-Dunton/hubot-jira-issue-helper.git"
+  },
   "scripts": {
     "test": "grunt test"
-  }
+  },
+  "version": "0.1.6"
 }

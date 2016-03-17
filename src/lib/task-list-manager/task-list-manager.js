@@ -1,6 +1,7 @@
 'use strict'
-var TaskListManager =  function (robot) {
+var TaskListManager =  function (robot, jira) {
     var _robot = robot;
+    var _jira = jira;
 
     var _setTaskList = function(projectKey, issueType, taskList) {
         var keyedTaskList = _robot.brain.get('jira-' + projectKey.toUpperCase()) || {};

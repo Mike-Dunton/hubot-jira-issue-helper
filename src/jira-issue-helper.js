@@ -16,20 +16,21 @@
 //   Michael Dunton
 
 var TaskListManager = require('./lib/task-list-manager/task-list-manager');
-var JIRA = require('./lib/jira-api/jira');
-require('./lib/jira-api/jira-issueTypes');
-
-JIRA.Config.setUserName(process.env.HUBOT_JIRA_USER);
-JIRA.Config.setPassword(process.env.HUBOT_JIRA_PASSWORD);
-JIRA.Config.setRootUri(process.env.HUBOT_JIRA_URL);
-
+var JiraClientConstructor = require('jira-connector');
 
 function robotShowError(response, error) {
     var errorString = error.toString() + "\n" + error.callstack;
-    response.respond("Something bad happened: " + errorString);
+    response.reply("Something bad happened: " + errorString);
 }
 
 function JiraHelper(robot) {
+    var jira = new JiraClientConstructor( {
+        host: process.env.HUBOT_JIRA_URL,
+        basic_auth: {
+            username: process.env.HUBOT_JIRA_USER,
+            password: process.env.HUBOT_JIRA_PASSWORD
+        }
+    });
     var taskListManager = new TaskListManager(robot);
     robot.respond(/jira show (.*)/i, function(response) {
         var messageArguments = response.match[1].split(" ");
@@ -75,18 +76,19 @@ function JiraHelper(robot) {
     });
 
     robot.respond(/jira list subtasks/i, function(response) {
-        JIRA.IssueTypes.ListSubTasks()
-            .then(function(result) {
-                var names = result.map(function(issueType) {
-                    return issueType.name;
-                });
-
-                var taskSubTypes = names.join(", ")
-                response.reply(taskSubTypes);
-            })
-            .catch(function(error) {
+        jira.issueType.getAllIssueTypes(undefined, function(error, result){
+            if(error){
                 robotShowError(response, error);
+                return;
+            }
+            var names = result.filter(function(issueType) {
+                return (issueType.subtask === true);
+            }).map(function(issueType) {
+                return issueType.name;
             });
+            var taskSubTypes = names.join(", ")
+            response.reply(taskSubTypes);
+        })
     });
 }
 
